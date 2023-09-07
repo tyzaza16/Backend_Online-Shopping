@@ -7,9 +7,8 @@ type transportStatus = 'prepare'| 'delivery' | 'cancel';
 const userSchema = new Schema({
   email: { type:  String, required: true},
   password: { type: String, required: true},
-  firstName: String,
-  lastName: String,
-  telNo: Number,
+  profileName: String,
+  telNo: String,
   address: String,
   role: { type: String, require: true},
   likeProduct: [String],

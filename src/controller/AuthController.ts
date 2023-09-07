@@ -1,6 +1,5 @@
 import { NextFunction, Request,Response } from "express";
 import { get, controller, post, bodyValidator } from './decorators';
-import bodyParser from "body-parser";
 import { LoginService } from "../service/LoginService";
 
 
@@ -9,9 +8,9 @@ class AuthController {
   
   @post('/login')
   @bodyValidator('email','password')
-  postLogin(req: Request, res: Response):void {
+  postLogin(req: Request, res: Response): Promise<Response> {
     const loginService = new LoginService();
-    loginService.logginInService(req,res);
+    return loginService.logginInService(req,res);
   }
 
   // @post('/login')
