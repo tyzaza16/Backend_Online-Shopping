@@ -8,12 +8,14 @@ import { connectDB } from './db/connect';
 
 import './controller/AuthController';
 import './controller/RootController';
+import './controller/RegisterController';
 
 
 const app = express();
 
 connectDB();
 
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieSession({ keys: ['sadasd']}));
 app.use(cors());
