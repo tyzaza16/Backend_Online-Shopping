@@ -6,9 +6,7 @@ import { SERVER_PORT } from './utils/loadEnvirontment';
 import cors from 'cors';
 import { connectDB } from './db/connect';
 
-import './controller/AuthController';
-import './controller/RootController';
-
+import './controller';
 
 const app = express();
 

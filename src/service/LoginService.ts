@@ -6,13 +6,13 @@ import { DtoResp } from "../common/model/DataObjResp";
 
 export class LoginService{ 
   
-  logginInService(req: Request,res: Response): void {
+  logginInService(req: Request,res: Response): Promise<Response> {
     // validate
     this.validate(req,res);
-    this.loggingIn(req,res);
+    return this.loggingIn(req,res);
   }
 
-  private async loggingIn(req: Request, res: Response) {
+  private async loggingIn(req: Request, res: Response): Promise<Response> {
 
     const email: string = req.body.email;
     const password: string = req.body.password;
