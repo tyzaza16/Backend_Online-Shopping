@@ -12,6 +12,7 @@ const userSchema = new Schema({
   address: String,
   role: { type: String, require: true},
   likeProduct: [String],
+  cart: [String],
   waitingPayment: [String],
   transportDetail: [{
     productId: String,
