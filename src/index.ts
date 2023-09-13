@@ -18,7 +18,6 @@ app.use(cors());
 app.use(AppRouter.getInstance());
 
 
-
 app.listen(SERVER_PORT, () => {
    console.log(`Listen on port ${SERVER_PORT}...`);
 });

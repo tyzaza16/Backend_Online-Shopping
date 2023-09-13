@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { UserModel } from '../db/model/userModel';
+import { User, UserModel } from '../db/model/userModel';
 import { DtoResp } from '../common/model/DataObjResp';
 import { HandlerStatus } from '../Constant';
 
 interface allowedUserUpdate {
-  profileName?: string,
-  telNo?: number
+  profileName?: string;
+  telNo?: number;
 }
 
 
@@ -26,29 +26,32 @@ export class UpdateAccountService{
   private async updatingAccount(email: string, updateObj: allowedUserUpdate, res: Response): Promise<Response> {
 
 
-    let doc = await UserModel.findOneAndUpdate({ email }, updateObj, {
-      new: true
-    });
+    let doc: User | null = await UserModel.findOneAndUpdate(
+      { email }, 
+      updateObj, 
+      { new: true }
+    );
 
-    let dtoResp = new DtoResp();
-    dtoResp.setStatus(HandlerStatus.Success);
+    let dtoResp: DtoResp = new DtoResp();
+    dtoResp.setStatus(HandlerStatus.Failed);
 
     if(!doc) {
       dtoResp.setMessage('user not found in the collection');
       return res.status(422).json( dtoResp );
     }
 
+    dtoResp.setStatus(HandlerStatus.Success);
     dtoResp.setMessage('update success!.');
     return res.status(200).json( { ...dtoResp, user: doc} );
 
   }
 
-  private validate(updateObj: allowedUserUpdate): Boolean {
+  private validate(updateObj: allowedUserUpdate): boolean {
     
     console.log(updateObj);
 
-    if( updateObj.telNo === undefined &&
-        updateObj.profileName === undefined
+    if( !updateObj.telNo &&
+        !updateObj.profileName
       ){
       return false;
     }

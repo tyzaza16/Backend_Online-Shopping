@@ -25,7 +25,7 @@ interface IMessage {
   to: string,
   subject: string,
   html: string,
-  attachments: IAttachments[]
+  attachments?: IAttachments[]
 }
 
 export class NodeMailer {
