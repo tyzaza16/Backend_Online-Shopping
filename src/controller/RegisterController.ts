@@ -1,12 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 import { get, controller, post, bodyValidator} from './decorators';
-import bodyParser from "body-parser";
-// import {RegisterService} from "../service/LoginService"
+import {RegisterService} from "../service/RegisterService"
 
 @controller('/register')
 class RegisterController {
-    @post('/')
+    @post('/general')
     postRegister(req: Request, res: Response){
-        res.json()
+        RegisterService.registerGeneral(req, res);
+    }
+
+    @post('/google')
+    get(req: Request, res: Response){
+        res.send('Welcome to API Home...');
     }
 }
