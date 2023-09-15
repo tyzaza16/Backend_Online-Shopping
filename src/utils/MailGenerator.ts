@@ -1,30 +1,14 @@
 import Mailgen from "mailgen";
-import { APP_HOST, APP_NAME} from "./loadEnvirontment";
+import { Application } from "../Constant";
 
-interface IBody {
-  body: {
-    name: string,
-    intro: string,
-    action?: {
-        instructions?: string,
-        button?: {
-            color?: string, 
-            text?: string,
-            link?: string
-        }
-    }
-  }
-}
-
-
-class MailGenerator {
+export class MailGenerator {
   
-  initMailGenerator(): Mailgen {
+  static initMailGenerator(): Mailgen {
     return new Mailgen({
       theme: 'default',
       product: {
-        name: APP_NAME,
-        link: APP_HOST
+        name: Application.Name,
+        link: Application.Host
       }
     });
   }
