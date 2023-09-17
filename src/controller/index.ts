@@ -4,3 +4,4 @@ export * from './UserController';
 export * from './RegisterController';
 export * from './CartController';
 export * from './PaymentController';
+export * from './ProductController';
