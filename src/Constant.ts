@@ -1,8 +1,8 @@
 
 /* Request Response Status */
 export enum HandlerStatus {
-  Success = 'success',
-  Failed = 'failed'
+  Success = 1,
+  Failed = 0
 }
 
 

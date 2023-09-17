@@ -1,4 +1,4 @@
-import mongoose, { Schema, InferSchemaType } from "mongoose";
+import mongoose, { Schema, InferSchemaType, Model } from "mongoose";
 
 type transportStatus = 'prepare'| 'delivery' | 'cancel';
 
@@ -44,7 +44,7 @@ const userSchema = new Schema({
 type User = InferSchemaType<typeof userSchema>;
 
 // create userModel for interact
-const UserModel = mongoose.model('User', userSchema); // it auto s by defaults
+const UserModel: Model<User> = mongoose.model('User', userSchema); // it auto s by defaults
 
 
 export { UserModel, User };

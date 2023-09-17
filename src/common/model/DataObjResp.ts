@@ -12,6 +12,14 @@ class DtoResp{
     this.message = message;
   }
 
+  getStatus(): HandlerStatus {
+    return this.status;
+  }
+
+  getMessage(): string {
+    return this.message;
+  }
+
 }
 
  

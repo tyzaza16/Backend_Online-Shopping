@@ -36,7 +36,7 @@ class UserController {
   @post('/send_email')
   @bodyValidator('email', 'updateObj')
   @use(initNodeMailer)
-  postSendEmail(req: Request, res: Response): Promise<Response> | Response{
+  postSendEmail(req: Request, res: Response): Promise<Response> | Response {
     const sendEmail = new SendEmailService();
     return sendEmail.sendConfirmPassword(req, res);
 
