@@ -1,10 +1,10 @@
 import { HandlerStatus } from "../../Constant"
 
 class DtoResp{
-  private status: HandlerStatus = HandlerStatus.Failed;
+  private status: boolean = HandlerStatus.Failed;
   private message: string = '';
 
-  setStatus(status: HandlerStatus): void{
+  setStatus(status: boolean): void{
     this.status = status;
   }
 
@@ -12,12 +12,12 @@ class DtoResp{
     this.message = message;
   }
 
-  getStatus(): HandlerStatus {
+  getStatus(): boolean {
     return this.status;
   }
 
   getMessage(): string {
-    return this.message;
+    return this.message
   }
 
 }

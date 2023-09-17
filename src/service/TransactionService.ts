@@ -1,24 +1,33 @@
 import { HydratedDocument } from "mongoose";
 import { Transaction, TransactionModel } from "../db/model/transactionModel";
-
+import { updateQuantity } from "../db/model/transactionModel";
+import { DtoResp } from "../common/model/DataObjResp";
+import { HandlerStatus } from "../Constant";
+import { Response } from "express";
 
 export class TransactionService {
   
-  static async createTransaction(email: string, productId: string, totalAmount: number ): Promise<Transaction | null >{
+  async createTransaction(email: string, productId: updateQuantity[], totalAmount: number, res: Response): Promise<Response>{
     
+    const dtoResp: DtoResp = new DtoResp();
+
     const newTransaction: HydratedDocument<Transaction> = new TransactionModel({
       email,
       productId,
       totalAmount,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     try {
       await newTransaction.save();
-      return newTransaction;
+      dtoResp.setStatus(HandlerStatus.Success);
+      dtoResp.setMessage('Create transaction Success!.');
+      return res.status(200).json({ ...dtoResp, transaction: newTransaction});
     }
     catch(err) {
-      return null;
+      dtoResp.setStatus(HandlerStatus.Failed);
+      dtoResp.setMessage('Create transaction failed!.');
+      return res.status(422).json({ ...dtoResp, })
     } 
 
   }

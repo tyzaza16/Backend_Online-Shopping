@@ -18,4 +18,5 @@ class ProductController{
     getData(req : Request, res : Response){
         ProductService.searchProduct(req, res);
     }
+    
 }

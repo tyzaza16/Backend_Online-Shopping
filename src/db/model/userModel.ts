@@ -35,7 +35,8 @@ const userSchema = new Schema({
   waitingPayment: [String],
   transportDetail: [{
     productId: String,
-    status: String
+    status: String,
+    quantity: Number
   }],
   hashedCode: String
 });

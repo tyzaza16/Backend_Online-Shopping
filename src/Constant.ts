@@ -1,9 +1,15 @@
 
 /* Request Response Status */
-export enum HandlerStatus {
-  Success = 1,
-  Failed = 0
+export const HandlerStatus: IHandlerStatus = {
+  Success: true,
+  Failed: false
+};
+
+export interface  IHandlerStatus {
+  Success: boolean,
+  Failed: boolean,
 }
+
 
 
 /* Mail Configuration */
@@ -19,4 +25,11 @@ export enum Application {
 export enum FrontEnd {
   Port = 3000,
   AccountPage = '/Account'
+}
+
+export enum TransportStatus {
+  Prepare = 'prepared',
+  Transport = 'transport',
+  Cancel = 'cancel',
+  Delivered = 'delivered'
 }
