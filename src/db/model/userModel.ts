@@ -31,7 +31,10 @@ const userSchema = new Schema({
   }], required: true},
   role: { type: String, required: true},
   likeProduct: [String],
-  cart: [String],
+  cart: [{
+    productId : String,
+    amount : Number
+  }],
   waitingPayment: [String],
   transportDetail: [{
     productId: String,

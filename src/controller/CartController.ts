@@ -18,4 +18,9 @@ class CartController{
     getData(req : Request, res : Response){
         CartService.getCart(req, res);
     }
+    
+    @post('/updateAmount')
+    updateAmount(req : Request, res : Response){
+        CartService.updateAmount(req, res);
+    }
 }
