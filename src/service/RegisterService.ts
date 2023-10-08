@@ -22,6 +22,7 @@ export class RegisterService{
                 const user = new UserModel({
                     email: req.body.email,
                     password : hash,
+                    profileName : req.body.profileName,
                     firstName: req.body.firstName,
                     lastName: req.body.lastName,
                     telNo: req.body.telNo,
@@ -34,7 +35,7 @@ export class RegisterService{
                 })
                 await user.save();
                 dtoResp.setStatus(HandlerStatus.Success);
-                dtoResp.setMessage("Register general success");
+                dtoResp.setMessage("Register general success")
                 return res.status(200).json( dtoResp );
             }
         })

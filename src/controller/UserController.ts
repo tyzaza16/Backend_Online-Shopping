@@ -6,6 +6,7 @@ import { NodeMailer } from "../utils/NodeMailer";
 import { EMAIL_APP_PASSWORD, EMAIL_USERNAME } from "../utils/loadEnvirontment";
 import { ConfirmPasswordService } from "../service/ConfirmPassword";
 import { UpdateAddressService } from "../service/UpdateAddressService";
+import { GetInfoService } from "../service/GetInfoService"; 
 
 function initNodeMailer(req: Request, res: Response, next: NextFunction) {
   if(!NodeMailer.transporter) {
@@ -25,6 +26,13 @@ function initNodeMailer(req: Request, res: Response, next: NextFunction) {
 
 @controller('/user')
 class UserController {
+
+  @post('/get_user')
+  @bodyValidator('email')
+  postGetUser(req: Request, res : Response) : Promise<Response> | Response{
+    const getInfo = new GetInfoService();
+    return getInfo.getUserData(req, res);
+  }
 
   @post('/update')
   @bodyValidator('email', 'updateObj')

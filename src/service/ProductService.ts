@@ -49,10 +49,11 @@ export class ProductService {
             {productName : {$regex : req.body.productName , $options : 'i'}},
             {new : true}
         )
+        console.log(productFinded);
         const productSuccess : HydratedDocument<Product>[] | null = await ProductModel.find(
             {_id : {$in : productFinded}}
         )
-        
+
         dtoResp.setStatus(HandlerStatus.Success)
         dtoResp.setMessage("Search success");
         return res.status(200).json({...dtoResp, productSuccess});
