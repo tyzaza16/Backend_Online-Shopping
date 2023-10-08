@@ -1,4 +1,4 @@
-import { HandlerStatus } from './../Constant';
+import { ApplicationRole, HandlerStatus } from './../Constant';
 import { Response, Request } from "express";
 import { User, UserModel } from "../db/model/userModel";
 import { DtoResp } from "../common/model/DataObjResp";
@@ -13,6 +13,7 @@ export class LoginService{
 
     const email: string = req.body.email;
     const password: string = req.body.password;
+    const role: string = req.body.role;
 
     // 1. check email is exist in database
     const user: User | null = await UserModel.findOne({ email });
@@ -22,13 +23,23 @@ export class LoginService{
 
     if(!user){
       dtoResp.setMessage('user not exist!.'); 
-      return res.status(422).json( dtoResp );
+      return res.status(200).json( dtoResp );
     }
 
     // 2. check password is match
     if(password !== user.password) { 
       dtoResp.setMessage('password not match');
-      return res.status(422).json( dtoResp );
+      return res.status(200).json( dtoResp );
+    }
+
+    if(role === ApplicationRole.User &&  role !== user.role) {
+      dtoResp.setMessage('Your account is not allowed to access Store');
+      return res.status(200).json( dtoResp );
+    }
+
+    if(role === ApplicationRole.Merchant && role !== user.role ) {
+      dtoResp.setMessage('Your account is not allowed to access BackOffice');
+      return res.status(200).json( dtoResp );
     }
 
     // 3. return status true and send email back

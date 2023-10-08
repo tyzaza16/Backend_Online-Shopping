@@ -4,16 +4,18 @@ import { bodyValidator, controller, post } from "./decorators";
 import { DtoResp } from "../common/model/DataObjResp";
 import { ProductService } from "../service/ProductService";
 import { TransactionService } from "../service/TransactionService";
+import { TransportStatus } from "../Constant";
+import { TransactionResp } from '../db/model/TransactionResp';
 
 @controller('/payment')
-class PaymentController{
+class PaymentController {
 
   @post('/credit_card')
   @bodyValidator(
     'email',
     'productList',
-    'cardNumber','expirationDate', 'holderName', 'cvcCode', 'amount')
-  async creditCard(req: Request, res: Response): Promise<Response | null > {
+    'cardNumber','expirationDate', 'holderName', 'cvcCode', 'amount', 'address')
+  async creditCard(req: Request, res: Response): Promise<Response> {
 
     /* payment */
     const creditCardService: CreditCardService = new CreditCardService();
@@ -33,24 +35,32 @@ class PaymentController{
       return res.status(422).json( updateQuantity );
     }
 
-    /* update bought product to user */
-    const addProductToUser: DtoResp = await productService.updateBoughtProductToUser(
-      req.body.email,
-      req.body.productList
-    );
-
-    if(!addProductToUser.getStatus()) {
-      return res.status(422).json( addProductToUser );
-    }
-
     /* create transaction and return response */
     const transactionService: TransactionService = new TransactionService();
-    return transactionService.createTransaction(
+    const newTransactionResp: TransactionResp  =  await transactionService.createTransaction(
       req.body.email,
       req.body.productList,
       req.body.amount,
-      res
+      true,
+      req.body.address
     );
+
+    if(!newTransactionResp.getStatus()) {
+      return res.status(422).json( newTransactionResp ); 
+    }
+
+    /* update bought product to transporter */
+    const addProductToMerchant: DtoResp = await productService.updateBoughtProductToMerchant(
+      req.body.email,
+      req.body.productList,
+      newTransactionResp.getTransactionId()
+    );
+
+    if(!addProductToMerchant.getStatus()){
+      res.status(422).json( newTransactionResp );
+    }
+
+    return res.status(200).json( newTransactionResp );
 
   }
 
