@@ -5,7 +5,7 @@ import { HandlerStatus } from "../Constant";
 import { HydratedDocument } from "mongoose";
 import { IOrderList, User, UserModel } from "../db/model/userModel";
 import { Product , ProductModel } from "../db/model/productModel";
-import { updateQuantity } from '../db/model/transactionModel';
+import { TransactionModel, updateQuantity } from '../db/model/transactionModel';
 
 export class ProductService {
     static async likeProduct(req : Request, res: Response){
@@ -215,6 +215,107 @@ export class ProductService {
         dtoResp.setMessage(`Successfully get warehouse history`);
         return res.status(200).json({ ...dtoResp, productList });
     }
+
+    static async getBestSeller(
+        res: Response
+    ): Promise<Response> {
+
+        const dtoResp: DtoResp = new DtoResp();
+        dtoResp.setStatus(HandlerStatus.Failed);
+
+        const date: Date = new Date();
+        const currentMonthDate: Date = new Date(date.getFullYear(), date.getMonth(), 1);
+
+        const bestSellerProduct: Product[] = await TransactionModel.aggregate([
+
+            {
+                $match: {
+                    $expr: {
+                        $gt: [
+                            "$timestamp", 
+                            currentMonthDate
+                        ]
+                    }
+                }
+            },
+            {
+                $unwind: "$productList"
+            },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'productList.productId',
+                    foreignField: '_id',
+                    as: 'productDetail'
+                }
+            },
+            {
+                $unwind: "$productDetail"
+            },
+            {
+                $group: {
+                    _id: "$productList.productId",
+                    soldQuantity: {
+                        $sum: "$productList.quantity"
+                    },
+                    productDetail: {
+                        $first: "$productDetail"
+                    }
+                }
+            },
+            {
+                $sort: {
+                    soldQuantity: -1
+                }
+            },
+            {
+                $limit: 10
+            }
+
+        ]);
+
+        if(bestSellerProduct.length === 0) {
+            dtoResp.setMessage('No product sold in this month.!');
+            return res.status(200).json({ ...dtoResp, bestSellerProduct});
+        }
+
+        dtoResp.setStatus(HandlerStatus.Success);
+        dtoResp.setMessage('Successfully get data!.');
+        return res.status(200).json({ ...dtoResp, bestSellerProduct });
+
+    }
+
+    static async suggestProduct(res: Response): Promise<Response> {
+
+        const dtoResp: DtoResp = new DtoResp();
+        dtoResp.setStatus(HandlerStatus.Failed);
+
+        const randomProduct: Product[] = await ProductModel.aggregate([
+            {
+                $match: {
+                    $expr: {
+                        $gte: [
+                            "$quantity",
+                            1
+                        ]
+                    }
+                }
+            },
+            {
+                $sample: { size: 10}
+            }
+        ]);
+
+        if( randomProduct.length === 0 ) {
+            dtoResp.setMessage('All product out of stock');
+            return res.status(200).json({ ...dtoResp, randomProduct });
+        }
+
+        dtoResp.setStatus(HandlerStatus.Success);
+        dtoResp.setMessage('Successfully get data!.');
+        return res.status(200).json({ ...dtoResp, randomProduct });
+    }
+
 
     private validateAllPropsInProductArray(productList: Product[]): boolean {
 
