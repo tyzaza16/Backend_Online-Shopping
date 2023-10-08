@@ -4,6 +4,26 @@ import { Methods } from './Methods';
 import { MetaDataKeys } from './MetaDataKeys';
 import { NextFunction, RequestHandler, Request, Response} from 'express';
 
+function queryValidators(keys: string): RequestHandler {
+  return function(req: Request, res: Response, next: NextFunction) {
+
+    if(!req.query){
+      res.status(422).send('Invalid query properties');
+      return;
+    }
+
+    for(let key of keys) {
+      if(!req.query[key]) {
+        res.status(422).send(`Invalid Query Properties ${key}`);
+        return;
+      }
+    }
+
+    next();
+
+  }
+}
+
 function bodyValidators(keys: string): RequestHandler {
   return function(req: Request, res: Response, next: NextFunction){
 
@@ -53,10 +73,18 @@ export function controller(routePrefix: string) {
         key
       )  || [];
 
+      const requireQueryValidator = Reflect.getMetadata(
+        MetaDataKeys.queryValidator,
+        target.prototype,
+        key
+      ) || [];
+
       const validator = bodyValidators(requiredBodyValidator);
 
+      const queryValidator = queryValidators(requireQueryValidator);
+
       if(path) {
-        router[method](`${routePrefix}${path}`, ...middlewares, validator,routeHandler);
+        router[method](`${routePrefix}${path}`, ...middlewares, validator, queryValidator, routeHandler);
       }
     });
   }

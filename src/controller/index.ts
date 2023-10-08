@@ -5,3 +5,4 @@ export * from './RegisterController';
 export * from './CartController';
 export * from './PaymentController';
 export * from './ProductController';
+export * from './BackOfficeController';

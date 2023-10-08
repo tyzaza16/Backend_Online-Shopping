@@ -7,7 +7,7 @@ import { LoginService } from "../service/LoginService";
 class AuthController {
   
   @post('/login')
-  @bodyValidator('email','password')
+  @bodyValidator('email','password','role')
   postLogin(req: Request, res: Response): Promise<Response> {
     const loginService = new LoginService();
     return loginService.logginInService(req,res);

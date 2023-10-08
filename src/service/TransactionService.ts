@@ -2,32 +2,43 @@ import { HydratedDocument } from "mongoose";
 import { Transaction, TransactionModel } from "../db/model/transactionModel";
 import { updateQuantity } from "../db/model/transactionModel";
 import { DtoResp } from "../common/model/DataObjResp";
-import { HandlerStatus } from "../Constant";
+import { HandlerStatus, transporter } from "../Constant";
 import { Response } from "express";
+import { IAddress } from "../db/model/userModel";
+import { TransactionResp } from "../db/model/TransactionResp";
 
 export class TransactionService {
   
-  async createTransaction(email: string, productId: updateQuantity[], totalAmount: number, res: Response): Promise<Response>{
+  async createTransaction(
+    email: string, 
+    productList: updateQuantity[], 
+    totalAmount: number,
+    status: boolean,
+    address: IAddress): Promise<TransactionResp>{
     
-    const dtoResp: DtoResp = new DtoResp();
+    const transactionResp: TransactionResp = new TransactionResp();
 
     const newTransaction: HydratedDocument<Transaction> = new TransactionModel({
       email,
-      productId,
+      productList,
       totalAmount,
+      status,
+      address,
       timestamp: new Date(),
     });
 
     try {
       await newTransaction.save();
-      dtoResp.setStatus(HandlerStatus.Success);
-      dtoResp.setMessage('Create transaction Success!.');
-      return res.status(200).json({ ...dtoResp, transaction: newTransaction});
+      transactionResp.setStatus(HandlerStatus.Success);
+      transactionResp.setMessage('Create transaction Success!.');
+      transactionResp.setTransactionId(newTransaction._id.toString());
+      transactionResp.setTransaction(newTransaction);
+      return transactionResp;
     }
     catch(err) {
-      dtoResp.setStatus(HandlerStatus.Failed);
-      dtoResp.setMessage('Create transaction failed!.');
-      return res.status(422).json({ ...dtoResp, })
+      transactionResp.setStatus(HandlerStatus.Failed);
+      transactionResp.setMessage('Create transaction failed!.');
+      return transactionResp;
     } 
 
   }

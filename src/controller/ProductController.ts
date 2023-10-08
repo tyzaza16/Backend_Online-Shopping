@@ -1,4 +1,4 @@
-import {post, get, controller } from "./decorators";
+import {post, controller, bodyValidator } from "./decorators";
 import { Request, Response } from "express";
 import { ProductService } from "../service/ProductService";
 

@@ -33,3 +33,10 @@ export enum TransportStatus {
   Cancel = 'cancel',
   Delivered = 'delivered'
 }
+
+export type transporter = TransportStatus; 
+
+export enum ApplicationRole {
+  User = 'user',  
+  Merchant = 'merchant'
+}

@@ -14,7 +14,7 @@ export class UpdateAccountService{
   updateAccount(req: Request, res: Response): Promise<Response> | Response {
 
     const email: string = req.body.email;
-    const updateObj: allowedUserUpdate = JSON.parse(req.body.updateObj);
+    const updateObj: allowedUserUpdate = req.body.updateObj;
 
     if(!this.validate(updateObj)) {
       return res.send(`Properties invalid. props cannot edit`);

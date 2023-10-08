@@ -7,6 +7,9 @@ interface IProduct{
     productImage?: string;
     price: number;
     quantity: number;
+    merchantEmail: string;
+    brandName: string;
+    netCost: number; 
 }
 
 // 2. Create a Schema corresponding to the document interface.
@@ -15,7 +18,10 @@ const productSchema = new Schema<IProduct>({
     productName: {type: String, required : true},
     productImage: {type: String},
     price: {type: Number, required : true},
-    quantity: {type: Number, required : true}
+    quantity: {type: Number, default: 0,required : true},
+    merchantEmail: {type: String, required: true},
+    brandName: String,
+    netCost: {type: Number, required : true},
 });
 
 // 3. Create a Model.

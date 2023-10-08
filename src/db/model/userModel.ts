@@ -1,4 +1,5 @@
 import mongoose, { Schema, InferSchemaType, Model } from "mongoose";
+import { TransportStatus } from "../../Constant";
 
 type transportStatus = 'prepare'| 'delivery' | 'cancel';
 
@@ -13,6 +14,14 @@ export type IAddress = {
   province: string;
   code: string;
 }
+
+export type IOrderList = { 
+  productId: string, 
+  quantity: number, 
+  status: TransportStatus, 
+  amount: number,
+  transactionIdRef: string 
+};
 
 // create user schema
 const userSchema = new Schema({
@@ -33,12 +42,15 @@ const userSchema = new Schema({
   likeProduct: [String],
   cart: [String],
   waitingPayment: [String],
-  transportDetail: [{
+  orderList: [{
     productId: String,
     status: String,
-    quantity: Number
+    quantity: Number,
+    amount: Number,
+    transactionIdRef: mongoose.Types.ObjectId
   }],
-  hashedCode: String
+  hashedCode: String,
+  telNo: { type: String, required: true}
 });
 
 // define type of user
