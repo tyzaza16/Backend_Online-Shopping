@@ -28,16 +28,19 @@ export class FileService{
         
     }
     async uploadImage(req : Request, res : Response) {
+        
         const dtoResp = new DtoResp;
-        if(req.file === undefined){
+
+        console.log(req.file);
+
+        if(!req.file){
             dtoResp.setStatus(HandlerStatus.Failed);
             dtoResp.setMessage("you must select a file");
             return res.status(200).json(dtoResp);
         }
-        console.log(req.file);
-        const imgUrl = `http://localhost:${SERVER_PORT}/file/${req.file.filename}`
+        // const imgUrl = `http://localhost:${SERVER_PORT}/file/${req.file.filename}`
         dtoResp.setStatus(HandlerStatus.Success);
-        dtoResp.setMessage(imgUrl);
+        dtoResp.setMessage('test message');
         return res.status(200).json(dtoResp);
 
     }
