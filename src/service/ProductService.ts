@@ -274,6 +274,8 @@ export class ProductService {
 
         ]);
 
+        console.log(bestSellerProduct);
+
         if(bestSellerProduct.length === 0) {
             dtoResp.setMessage('No product sold in this month.!');
             return res.status(200).json({ ...dtoResp, bestSellerProduct});

@@ -6,6 +6,7 @@ import Grid from 'gridfs-stream';
 import mongoose from "mongoose";
 import { GridFSBucket, MongoClient } from "mongodb";
 import { DB_URI } from "../utils/loadEnvirontment";
+import { TestModel } from "../db/model/testModel";
 export class FileService{
 
     async getImage(req : Request, res : Response){
@@ -38,10 +39,41 @@ export class FileService{
             dtoResp.setMessage("you must select a file");
             return res.status(200).json(dtoResp);
         }
+
+        const test = new TestModel({
+            image: {
+                data: req.file.buffer,
+                contentType: req.file.mimetype
+            }
+        });
+
+        await test.save();
+        
         // const imgUrl = `http://localhost:${SERVER_PORT}/file/${req.file.filename}`
         dtoResp.setStatus(HandlerStatus.Success);
         dtoResp.setMessage('test message');
         return res.status(200).json(dtoResp);
 
+    }
+
+    async getImages(req : Request, res : Response): Promise<Response> {
+
+        const dtoResp = new DtoResp;
+        dtoResp.setStatus(HandlerStatus.Success);
+        dtoResp.setMessage('test message');
+
+        const getImage = await TestModel.find({});
+
+        console.log(getImage);
+
+        if(!getImage[0].image.data) {
+            return res.status(200).json({ ...dtoResp });
+        }
+
+        const base64Data = getImage[0].image.data.toString('base64');
+
+        return res.status(200).json({ ...dtoResp, getImage: base64Data });
+        
+        
     }
 }
