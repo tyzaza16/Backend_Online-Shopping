@@ -2,30 +2,6 @@ import { controller, get, post, use } from "./decorators";
 import { NextFunction, Request, RequestHandler, Response } from "express"; 
 import { FileService } from "../service/FileService";
 import multer, { Multer } from "multer";
-import { GridFsStorage } from "multer-gridfs-storage";
-import { DB_URI } from "../utils/loadEnvirontment";
-
-// const storage = new GridFsStorage({
-//     url: DB_URI,
-//     file: (req: Request , file: any) => {
-//         console.log("mimetype : " + file.mimetype)
-
-//         const match = ["image/png", "image/jpeg"];
-
-//         console.log(req.file);
-
-//         if (match.indexOf(file.mimetype) === -1) {
-//             const filename = `${Date.now()}-${file.originalname}`;
-//             return filename;
-//         }
-
-//         console.log(file);
-//         return {
-//             bucketName: "photos",
-//             filename: `${Date.now()}-${file.originalname}`,
-//         };
-//     },
-// });
 
 const storage = multer.memoryStorage();
 
@@ -62,7 +38,6 @@ class FileController{
     @use( uploadSingle )
     uploadImage(req: Request, res: Response) {
         const fileService = new FileService();
-        console.log(req.file)
         fileService.uploadImage(req, res);
     }
 

@@ -1,34 +1,10 @@
 import { Request , Response } from "express";
 import { DtoResp } from "../common/model/DataObjResp";
 import { HandlerStatus } from "../Constant";
-import { SERVER_PORT } from "../utils/loadEnvirontment";
-import Grid from 'gridfs-stream';
-import mongoose from "mongoose";
-import { GridFSBucket, MongoClient } from "mongodb";
-import { DB_URI } from "../utils/loadEnvirontment";
 import { TestModel } from "../db/model/testModel";
 import { Product, ProductModel } from "../db/model/productModel";
 export class FileService{
 
-    async getImage(req : Request, res : Response){
-        // const dtoResp = new DtoResp;
-        // let gfs;
-        // const conn = mongoose.connection;
-        // conn.once("open", function () {
-        //     gfs = Grid(conn.db, mongoose.mongo);
-        //     gfs.collection("photos");
-        // });
-        // try {
-        //     const file = await gfs.files.findOne({ filename: req.params.filename });
-        //     const readStream = gfs.createReadStream(file.filename);
-        //     readStream.pipe(res);
-        // } catch (error) {
-        //     dtoResp.setStatus(HandlerStatus.Failed);
-        //     dtoResp.setMessage("Image not found");
-        //     return res.status(200).json(dtoResp);
-        // }
-        
-    }
     async uploadImage(req : Request, res : Response) {
         
         const dtoResp = new DtoResp;
@@ -48,17 +24,21 @@ export class FileService{
         //     }
         // });
 
-        // await test.save();
+        const uploadedProduct : Product | null = await ProductModel.findOneAndUpdate(
+            { _id : req.body.id },
+            { productImage : 
+                { 
+                    data : req.file.buffer, 
+                    contentType : req.file.mimetype
+                } 
+            },
+            { new: true }
+        )
+        console.log(uploadedProduct);
 
-        const product: Product | null = await ProductModel.findByIdAndUpdate(
-            req.body.id,
-            { productImage: {
-                data: req.file.buffer,
-                contentType: req.file.mimetype
-            }},
-        );
+
+        // await test.save();
         
-        // const imgUrl = `http://localhost:${SERVER_PORT}/file/${req.file.filename}`
         dtoResp.setStatus(HandlerStatus.Success);
         dtoResp.setMessage('test message');
         return res.status(200).json(dtoResp);
