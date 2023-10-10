@@ -80,6 +80,17 @@ export class MerchantService {
         $unwind: '$productList.productDetail'
       },
       {
+        $unset: 
+        [
+          "productList.productDetail.productImage",
+          "productList.productDetail.quantity",
+          "productList.productDetail.productId",
+          "productList.productDetail.productName",
+          "productList.productDetail.brandName",
+          "productList.productDetail.merchantEmail"
+        ]
+      },
+      {
           $group: {
               _id: '$productList._id',
               productList: {
@@ -94,7 +105,7 @@ export class MerchantService {
           $replaceRoot: {
               newRoot: '$productList'
           }
-      }
+      },
       // {
       //   $group: {
       //       _id: '$productList._id',
@@ -124,11 +135,10 @@ export class MerchantService {
       //         newRoot: '$transactionDetails'
       //     }
       // }
-
     
     ]);
 
-    // console.log(monthlyTransaction);
+    console.log(monthlyTransaction);
 
     if( monthlyTransaction.length === 0 ) {
       return { month: currentMonth, totalProfit, totalOrder };

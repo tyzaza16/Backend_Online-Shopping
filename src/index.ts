@@ -12,7 +12,6 @@ const app = express();
 
 connectDB();
 
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieSession({ keys: ['sadasd']}));

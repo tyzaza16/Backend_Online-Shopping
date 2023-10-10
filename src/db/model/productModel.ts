@@ -16,7 +16,10 @@ interface IProduct{
 const productSchema = new Schema<IProduct>({
     productId: {type: String, required : true},
     productName: {type: String, required : true},
-    productImage: {type: String},
+    productImage: {type: {
+        data: Buffer,
+        contentType: String
+    }},
     price: {type: Number, required : true},
     quantity: {type: Number, default: 0,required : true},
     merchantEmail: {type: String, required: true},

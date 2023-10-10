@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import { GridFSBucket, MongoClient } from "mongodb";
 import { DB_URI } from "../utils/loadEnvirontment";
 import { TestModel } from "../db/model/testModel";
+import { Product, ProductModel } from "../db/model/productModel";
 export class FileService{
 
     async getImage(req : Request, res : Response){
@@ -40,14 +41,22 @@ export class FileService{
             return res.status(200).json(dtoResp);
         }
 
-        const test = new TestModel({
-            image: {
+        // const test = new TestModel({
+        //     image: {
+        //         data: req.file.buffer,
+        //         contentType: req.file.mimetype
+        //     }
+        // });
+
+        // await test.save();
+
+        const product: Product | null = await ProductModel.findByIdAndUpdate(
+            req.body.id,
+            { productImage: {
                 data: req.file.buffer,
                 contentType: req.file.mimetype
-            }
-        });
-
-        await test.save();
+            }},
+        );
         
         // const imgUrl = `http://localhost:${SERVER_PORT}/file/${req.file.filename}`
         dtoResp.setStatus(HandlerStatus.Success);
