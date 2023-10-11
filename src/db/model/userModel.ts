@@ -46,7 +46,7 @@ const userSchema = new Schema({
   }],
   waitingPayment: [String],
   orderList: [{
-    productId: String,
+    productId: mongoose.Types.ObjectId,
     status: String,
     quantity: Number,
     amount: Number,

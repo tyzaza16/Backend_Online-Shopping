@@ -7,6 +7,15 @@ import { IOrderList, User, UserModel } from "../db/model/userModel";
 import { Product , ProductModel } from "../db/model/productModel";
 import { TransactionModel, updateQuantity } from '../db/model/transactionModel';
 
+interface ProductWithImageLink extends Product {
+    productImageLink?: string
+}
+
+interface BestSellerProduct extends Product{
+    soldQuantity: number;
+    productDetail: ProductWithImageLink;
+}
+
 export class ProductService {
     static async likeProduct(req : Request, res: Response){
         const dtoResp = new DtoResp;
@@ -226,7 +235,7 @@ export class ProductService {
         const date: Date = new Date();
         const currentMonthDate: Date = new Date(date.getFullYear(), date.getMonth(), 1);
 
-        const bestSellerProduct: Product[] = await TransactionModel.aggregate([
+        const bestSellerProduct: BestSellerProduct[] = await TransactionModel.aggregate([
 
             {
                 $match: {
@@ -274,12 +283,24 @@ export class ProductService {
 
         ]);
 
-        console.log(bestSellerProduct);
-
         if(bestSellerProduct.length === 0) {
             dtoResp.setMessage('No product sold in this month.!');
             return res.status(200).json({ ...dtoResp, bestSellerProduct});
         }
+
+        // let bestSellerList: BestSellerProduct[] = []
+
+        // for(let bestSeller of bestSellerProduct) {
+
+        //     if(bestSeller.productDetail.productImage) {
+        //         const linkImage: string = `data:${bestSeller.productDetail.productImage.contentType};base64,${bestSeller.productDetail.productImage.data.toString('base64')}`;
+        //         delete bestSeller.productDetail.productImage;
+        //         const temp = { ...bestSeller, productDetail: { ...bestSeller.productDetail, productImageLink: linkImage} }
+        //          bestSellerList.push(temp);
+        //     }else {
+        //         bestSellerList.push(bestSeller)
+        //     }
+        // }
 
         dtoResp.setStatus(HandlerStatus.Success);
         dtoResp.setMessage('Successfully get data!.');
