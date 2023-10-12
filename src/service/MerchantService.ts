@@ -80,6 +80,17 @@ export class MerchantService {
         $unwind: '$productList.productDetail'
       },
       {
+        $unset: 
+        [
+          "productList.productDetail.productImage",
+          "productList.productDetail.quantity",
+          "productList.productDetail.productId",
+          "productList.productDetail.productName",
+          "productList.productDetail.brandName",
+          "productList.productDetail.merchantEmail"
+        ]
+      },
+      {
           $group: {
               _id: '$productList._id',
               productList: {
@@ -94,7 +105,7 @@ export class MerchantService {
           $replaceRoot: {
               newRoot: '$productList'
           }
-      }
+      },
       // {
       //   $group: {
       //       _id: '$productList._id',
@@ -124,11 +135,10 @@ export class MerchantService {
       //         newRoot: '$transactionDetails'
       //     }
       // }
-
     
     ]);
 
-    // console.log(monthlyTransaction);
+    console.log(monthlyTransaction);
 
     if( monthlyTransaction.length === 0 ) {
       return { month: currentMonth, totalProfit, totalOrder };
@@ -193,31 +203,52 @@ export class MerchantService {
       },
       {
         $lookup: {
-          from: "transactions",
-          localField: "orderList.transactionIdRef",
+          from: "products",
+          localField: "orderList.productId",
           foreignField: "_id",
-          as: "orderList.transactionDetail"
+          as: "orderList.productDetail"
         }
       },
       {
-        $unwind: "$orderList.transactionDetail"
+        $unwind: "$orderList.productDetail"
       },
       {
-        $group: {
-          _id: "$orderList._id",
-          transactionDetail: {
+        $unset: [
+          "orderList.productDetail.productImage",
+          "orderList.productDetail.productId",
+          "orderList.productDetail.quantity",
+          "orderList.productDetail.netCost",
+          "orderList.productDetail.merchantEmail",
+        ]
+      },
+      {
+        $group:{
+          _id: "$orderList.transactionIdRef",
+          productDetail: {
             $push: "$orderList"
+          },
+          totalAmount: {
+            $sum: "$orderList.amount"
           }
         }
       },
       {
-        $unwind: "$transactionDetail"
+        $lookup: {
+          from: "transactions",
+          localField: "_id",
+          foreignField: "_id",
+          as: "transactionDetail"
+        }
       },
       {
-        $replaceRoot: {
-          newRoot: '$transactionDetail'
-        }
-      }
+        $unwind: "$transactionDetail"
+      },      
+      {
+        $unset: [
+          "transactionDetail.productList",
+          "transactionDetail.status",
+        ]
+      },
     ]);
 
     if(!unprepareOrder) {

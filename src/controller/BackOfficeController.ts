@@ -9,7 +9,7 @@ class BackOfficeController {
 
   @post('/dashboard')
   @bodyValidator('merchantEmail')
-  postMerchantDashBoard(req: Request, res: Response){
+  postMerchantDashBoard(req: Request, res: Response): Promise<Response>{
 
     const merchantService: MerchantService = new MerchantService();
     return merchantService.getDashboard(req, res);
