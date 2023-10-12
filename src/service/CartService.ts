@@ -77,8 +77,7 @@ export class CartService{
             const i = user?.cart.findIndex((obj)=>{
                 return product.productId == obj.productId
             })
-            const imageBase64 = product.productImage?.data.toString('base64');
-            return {...product.toObject(), amount : user?.cart[i].amount, productImage : `data:image/${product.productImage?.contentType};base64, ${imageBase64}`}
+            return {...product.toObject(), amount : user?.cart[i].amount}
         })
 
         dtoResp.setStatus(HandlerStatus.Success);
