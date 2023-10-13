@@ -22,7 +22,7 @@ class PaymentController {
     const paymentResult: DtoResp = await creditCardService.createTransaction(req, res);
 
     if(!paymentResult.getStatus()) {
-      return res.status(402).json( paymentResult );
+      return res.status(200).json( paymentResult );
     }
 
     /* update quantity */
@@ -32,7 +32,7 @@ class PaymentController {
     );
 
     if(!updateQuantity.getStatus()) {
-      return res.status(422).json( updateQuantity );
+      return res.status(200).json( updateQuantity );
     }
 
     /* create transaction and return response */
@@ -46,7 +46,7 @@ class PaymentController {
     );
 
     if(!newTransactionResp.getStatus()) {
-      return res.status(422).json( newTransactionResp ); 
+      return res.status(200).json( newTransactionResp ); 
     }
 
     /* update bought product to transporter */
@@ -57,7 +57,9 @@ class PaymentController {
     );
 
     if(!addProductToMerchant.getStatus()){
-      res.status(422).json( newTransactionResp );
+      newTransactionResp.setMessage(addProductToMerchant.getMessage());
+      newTransactionResp.setTransactionStatusObj(false);
+      res.status(200).json( newTransactionResp );
     }
 
     return res.status(200).json( newTransactionResp );

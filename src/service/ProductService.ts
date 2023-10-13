@@ -79,7 +79,7 @@ export class ProductService {
             const updateResults: Product | null = await ProductModel.findOneAndUpdate(
                 { _id: product.productId },
                 { $inc:  {quantity: -product.quantity} },
-                { new: true }
+                { new: true, projection: { productImage: 0} }
             );
 
             if(!updateResults){
@@ -116,7 +116,10 @@ export class ProductService {
 
         for(let product of productList) {
 
-            const findProduct: Product | null = await ProductModel.findById({ _id: product.productId });
+            const findProduct: Product | null = await ProductModel.findById(
+                { _id: product.productId },
+                { productImage: 0}
+            );
 
             if(!findProduct) {
                 dtoResp.setMessage('Product does not exist in database!.');

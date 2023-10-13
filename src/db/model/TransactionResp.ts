@@ -13,6 +13,10 @@ export class TransactionResp extends DtoResp{
   };
 
 
+  setTransactionStatusObj(status: boolean): void {
+    this.transactionRespObj.status = status;
+  }
+
   getTransaction(): Transaction {
     return this.transactionRespObj;
   }
