@@ -181,6 +181,7 @@ export class ProductService {
                         ...product,
                         productId: productCount+1,
                         merchantEmail: email,
+                        timestamp: new Date()
                     });
 
                     await newProduct.save();
@@ -342,6 +343,19 @@ export class ProductService {
         dtoResp.setMessage('Successfully get data!.');
         return res.status(200).json({ ...dtoResp, randomProduct });
     }
+
+    static async getNewestProduct(res: Response): Promise<Response> {
+        const dtoResp: DtoResp = new DtoResp();
+        dtoResp.setStatus(HandlerStatus.Success);
+        dtoResp.setMessage('Successfully find newest product!.');
+
+        const newestProduct: Product[] = await ProductModel.find({}, {productImage: 0})
+        .sort({
+            timestamp: -1
+        }).limit(10);
+
+        return res.status(200).json({...dtoResp, newestProduct});
+    } 
 
 
     private validateAllPropsInProductArray(productList: Product[]): boolean {

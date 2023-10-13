@@ -6,6 +6,7 @@ import { ProductService } from "../service/ProductService";
 import { TransactionService } from "../service/TransactionService";
 import { TransportStatus } from "../Constant";
 import { TransactionResp } from '../db/model/TransactionResp';
+import { CartService } from "../service/CartService";
 
 @controller('/payment')
 class PaymentController {
@@ -62,8 +63,15 @@ class PaymentController {
       res.status(200).json( newTransactionResp );
     }
 
-    return res.status(200).json( newTransactionResp );
+    const cartService: CartService = new CartService();
+    const clearUserCart: DtoResp = await cartService.clearCart(req.body.email, res);
+    
+    if(!clearUserCart.getStatus()) {
+      return res.status(200).json( clearUserCart );
+    }
 
+    return res.status(200).json( newTransactionResp );
+ 
   }
 
 

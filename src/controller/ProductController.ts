@@ -28,5 +28,10 @@ class ProductController{
     bestSellingProduct(req: Request, res: Response) {
         return ProductService.getBestSeller(res);
     }
+
+    @get('/newest')
+    newestProduct(req: Request, res: Response) {
+        return ProductService.getNewestProduct(res);
+    }
     
 }

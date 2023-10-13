@@ -107,4 +107,24 @@ export class CartService{
         dtoResp.setMessage("Update success");
         return res.status(200).json(dtoResp);
     }
+
+    async clearCart(email: string, res: Response): Promise<DtoResp> {
+        const dtoResp: DtoResp = new DtoResp();
+        dtoResp.setStatus(HandlerStatus.Failed);
+
+        const user: User | null = await UserModel.findOneAndUpdate(
+            { email },
+            { $set: { cart: []} },
+            { new: true }
+        );
+
+        if(!user) {
+            dtoResp.setMessage('Not found user!.');
+            return dtoResp;
+        }
+
+        dtoResp.setStatus(HandlerStatus.Success);
+        dtoResp.setMessage('Clear cart success!.');
+        return dtoResp;
+    } 
 }
