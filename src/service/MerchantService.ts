@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { DtoResp } from '../common/model/DataObjResp';
-import { HandlerStatus } from '../Constant';
+import { HandlerStatus, TransportStatus } from '../Constant';
 import { Transaction, TransactionModel } from '../db/model/transactionModel';
 import { Product } from '../db/model/productModel';
 import { ObjectId } from 'mongoose';
-import { User, UserModel } from '../db/model/userModel';
+import { IOrderList, User, UserModel } from '../db/model/userModel';
 
 interface MonthlyProfitResp {
   month: number;
@@ -138,8 +138,6 @@ export class MerchantService {
     
     ]);
 
-    console.log(monthlyTransaction);
-
     if( monthlyTransaction.length === 0 ) {
       return { month: currentMonth, totalProfit, totalOrder };
     }
@@ -249,6 +247,11 @@ export class MerchantService {
           "transactionDetail.status",
         ]
       },
+      {
+        $sort: {
+          "transactionDetail.timestamp": 1
+        }
+      }
     ]);
 
     if(!unprepareOrder) {
@@ -260,6 +263,31 @@ export class MerchantService {
     dtoResp.setStatus(HandlerStatus.Success);
     dtoResp.setMessage('Successfuly get data!.');
     return res.status(200).json({ ...dtoResp, orderList: unprepareOrder});
+
+  }
+
+  async updateStatusOfPackedOrder(transactionId: string, res: Response): Promise<Response> {
+
+
+    const dtoResp: DtoResp = new DtoResp();
+    dtoResp.setStatus(HandlerStatus.Failed);
+
+    const updatedOrder = await UserModel.findOneAndUpdate(
+      { "orderList.transactionIdRef": transactionId },
+      { $set: { "orderList.$[element].status": TransportStatus.Transport} },
+      { arrayFilters: [ { "element.transactionIdRef": transactionId} ], new: true }
+    );
+
+
+    if(!updatedOrder){
+      dtoResp.setStatus(HandlerStatus.Failed);
+      dtoResp.setMessage('Not found user!.');
+      return res.status(200).json( dtoResp );
+    }
+
+    dtoResp.setStatus(HandlerStatus.Success);
+    dtoResp.setMessage('Successfully update status!.');
+    return res.status(200).json({ ...dtoResp, orderList: updatedOrder});
 
   }
 

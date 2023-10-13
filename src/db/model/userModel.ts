@@ -16,11 +16,11 @@ export type IAddress = {
 }
 
 export type IOrderList = { 
-  productId: string, 
+  productId?: string, 
   quantity: number, 
   status: TransportStatus, 
   amount: number,
-  transactionIdRef: string 
+  transactionIdRef?: string 
 };
 
 // create user schema

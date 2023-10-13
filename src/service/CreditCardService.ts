@@ -21,8 +21,6 @@ export class CreditCardService {
       cvcCode, 
       amount } = req.body;
 
-    
-    console.log(cardNumber);
 
     const dtoResp: DtoResp = new DtoResp();
     dtoResp.setStatus(HandlerStatus.Failed);
@@ -31,7 +29,6 @@ export class CreditCardService {
       { cardNumber }
     );
 
-    console.log(creditCard);
 
     if(!creditCard) {
       dtoResp.setMessage('Not found credit card!.');
@@ -74,12 +71,6 @@ export class CreditCardService {
   private validateExpirationDate(cardDate: string): boolean {
     const nowDate: Date = new Date();
     const cardDateArray: string[] = cardDate.split('/');
-
-    console.log()
-    console.log(nowDate.getMonth() +1 );
-    console.log(parseInt(cardDateArray[0]));
-    console.log(nowDate.getFullYear() % 100);
-    console.log(parseInt(cardDateArray[1]));
     
     if(  
       nowDate.getFullYear() % 100 > parseInt(cardDateArray[1])

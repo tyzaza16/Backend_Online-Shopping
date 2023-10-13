@@ -47,8 +47,6 @@ export class UpdateAccountService{
   }
 
   private validate(updateObj: allowedUserUpdate): boolean {
-    
-    console.log(updateObj);
 
     if( !updateObj.telNo &&
         !updateObj.profileName

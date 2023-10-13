@@ -43,7 +43,6 @@ class FileController{
 
     @get('/images')
     getImages(req: Request, res: Response): Promise<Response> {
-        console.log('test')
         const fileService = new FileService();
         return fileService.getImages(req, res);
     }

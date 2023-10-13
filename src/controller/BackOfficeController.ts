@@ -37,4 +37,12 @@ class BackOfficeController {
     const merchantService: MerchantService = new MerchantService();
     return merchantService.getUnprepareOrder(req.body.merchantEmail, res);
   }
+
+  @post('/update_packed_order')
+  @bodyValidator('orderIdList')
+  postUpdateOrderStatus(req: Request, res: Response): Promise<Response> {
+    const merchantService: MerchantService = new MerchantService();
+    return merchantService.updateStatusOfPackedOrder(req.body.orderIdList, res);
+  }
+
 }

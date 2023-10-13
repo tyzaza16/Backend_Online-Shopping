@@ -9,8 +9,6 @@ export class FileService{
         
         const dtoResp = new DtoResp;
 
-        console.log(req.file);
-
         if(!req.file){
             dtoResp.setStatus(HandlerStatus.Failed);
             dtoResp.setMessage("you must select a file");
@@ -34,7 +32,6 @@ export class FileService{
             },
             { new: true }
         )
-        console.log(uploadedProduct);
 
 
         // await test.save();
@@ -52,8 +49,6 @@ export class FileService{
         dtoResp.setMessage('test message');
 
         const getImage = await TestModel.find({});
-
-        console.log(getImage);
 
         if(!getImage[0].image.data) {
             return res.status(200).json({ ...dtoResp });

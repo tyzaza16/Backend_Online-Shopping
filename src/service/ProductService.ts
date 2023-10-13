@@ -168,8 +168,7 @@ export class ProductService {
                     merchantEmail: email, 
                     productName: product.productName 
                 });
-                
-                console.log(findProduct);
+        
                 // if not have product : add new product
                 if(!findProduct){
 
@@ -181,8 +180,6 @@ export class ProductService {
                         merchantEmail: email,
                     });
 
-                    console.log(newProduct);
-
                     await newProduct.save();
                 }
                 else {
@@ -192,7 +189,7 @@ export class ProductService {
                  
             }
 
-            const currentProductList: Product[] | null = await ProductModel.find({ merchantEmail: email });
+            const currentProductList: Product[] | null = await ProductModel.find({ merchantEmail: email }, {productImage: 0});
             
             dtoResp.setStatus(HandlerStatus.Success);
             dtoResp.setMessage('Update stock successfully!.');
@@ -213,7 +210,11 @@ export class ProductService {
 
         // if(use find it will return [] when not found document matched)
         // if(use findOne it will return null when not found document matched)
-        let productList: Product[] | [] = await ProductModel.find({ merchantEmail }).lean(); 
+        let productList: Product[] | [] = await ProductModel.find
+        (
+            { merchantEmail },
+            { productImage: 0}
+        ).lean(); 
 
         if(productList.length === 0) {
             dtoResp.setMessage(`you don't have product in store yet!.`);
