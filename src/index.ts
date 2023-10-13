@@ -12,7 +12,7 @@ const app = express();
 
 connectDB();
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieSession({ keys: ['sadasd']}));
 app.use(cors());

@@ -14,6 +14,11 @@ class ProductController{
         ProductService.dislikeProduct(req, res);
     }
 
+    @post('/getLikeProduct')
+    getLikeProduct(req : Request, res : Response){
+        ProductService.getLikeProduct(req, res);
+    }
+
     @post('/searchProduct')
     getData(req : Request, res : Response){
         ProductService.searchProduct(req, res);

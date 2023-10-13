@@ -52,6 +52,58 @@ export class ProductService {
         return res.status(200).json(dtoResp);
     }
 
+    static async getLikeProduct(req : Request, res: Response){
+        const dtoResp = new DtoResp;
+        const productDetail : Product[] = await UserModel.aggregate([
+            {
+                $match:{
+                    email : req.body.email
+                }
+            },
+            {
+                $unwind: "$likeProduct"
+            },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'likeProduct',
+                    foreignField: 'productId',
+                    as: 'productDetail'
+                }
+            },
+            {
+                $unwind: "$productDetail"
+            },
+            {
+                $group:{
+                    _id : "$productDetail._id",
+                    productDetail : {
+                        $first: "$productDetail"
+                    },
+                }
+            },
+            {
+                $unset: [
+                    "productDetail.netCost",
+                    "productDetail.merchantEmail",
+                 ]
+            },
+            {
+                $replaceRoot: {
+                    newRoot: '$productDetail'
+                }
+            }
+        ]);
+        if(!productDetail){
+            dtoResp.setStatus(HandlerStatus.Failed)
+            dtoResp.setMessage("Email doesn't exist in system");
+            return res.status(200).json(dtoResp);
+        }
+        dtoResp.setStatus(HandlerStatus.Success);
+        dtoResp.setMessage("get like product success");
+        return res.status(200).json({...dtoResp, productDetail : productDetail});
+    }
+
     static async searchProduct(req : Request, res: Response){
         const dtoResp = new DtoResp;
         const productFinded : HydratedDocument<Product>[] | null = await ProductModel.find(
