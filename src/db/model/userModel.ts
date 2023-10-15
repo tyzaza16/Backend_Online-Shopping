@@ -40,10 +40,10 @@ const userSchema = new Schema({
   }], required: true},
   role: { type: String, required: true},
   likeProduct: [String],
-  cart: [{
+  cart: {type :[{
     productId : String,
     amount : Number
-  }],
+  }],  unique: true},
   waitingPayment: [String],
   orderList: [{
     productId: mongoose.Types.ObjectId,
