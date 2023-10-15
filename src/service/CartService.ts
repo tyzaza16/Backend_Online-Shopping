@@ -8,11 +8,12 @@ import { HydratedDocument } from "mongoose";
 export class CartService{
     static async addCart(req : Request, res : Response): Promise<Response> {
         const dtoResp = new DtoResp();
-        const checkDuplicate : User | null  = await UserModel.findOne(
+        const checkDuplicate : User[] | null  = await UserModel.find(
             { email : req.body.email, "cart.productId" : req.body.productId },
         );
+        console.log(checkDuplicate)
 
-        if(checkDuplicate){
+        if(checkDuplicate.length > 0){
             dtoResp.setStatus(HandlerStatus.Failed)
             dtoResp.setMessage("This product has been exist in cart")
             return res.status(200).json(dtoResp);
@@ -20,7 +21,7 @@ export class CartService{
         const user : HydratedDocument<User> | null  = await UserModel.findOneAndUpdate(
             { email : req.body.email },
             { $push : { cart : { productId : req.body.productId, amount : 1 }}},
-            { new : true, upsert : true }
+            { new : true }
         );
 
         if(!user){
@@ -37,25 +38,17 @@ export class CartService{
 
     static async deleteCart(req : Request, res : Response): Promise<Response> {
         const dtoResp = new DtoResp();
-        const user : HydratedDocument<User> | null  = await UserModel.findOne({ email : req.body.email });
+        const user : HydratedDocument<User> | null  = await UserModel.findOneAndUpdate(
+            { email : req.body.email},
+            { $pull : { cart : { productId : req.body.productId }}},
+            { new : true}
+            
+        );
         if(!user){
             dtoResp.setStatus(HandlerStatus.Failed)
             dtoResp.setMessage("Email doesn't exist in system")
             return res.status(200).json(dtoResp);
         }
-
-        const indexProduct =  user.cart.findIndex((product)=>{
-            return product.productId === req.body.productId
-        });
-        // return -1 when There's no productId match with array in Cart 
-        console.log(indexProduct)
-        if(indexProduct === -1 ){
-            dtoResp.setStatus(HandlerStatus.Failed);
-            dtoResp.setMessage("This productId doesn't have in cart");
-            return res.status(200).json(dtoResp);
-        }
-        user?.cart.splice(indexProduct, 1);
-        await user?.save();
         dtoResp.setStatus(HandlerStatus.Success)
         dtoResp.setMessage("Delete product on cart success")
         return res.status(200).json(dtoResp);
@@ -91,7 +84,6 @@ export class CartService{
             const islikeProduct = user?.likeProduct.find((likeProduct_id)=>{
                 return likeProduct_id === product.productId;
             })
-            console.log(islikeProduct);
             return {...product.toObject(), amount : user?.cart[i].amount, islike : islikeProduct ? true : false}
         })
 

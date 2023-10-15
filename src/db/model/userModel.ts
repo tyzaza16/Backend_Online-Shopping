@@ -27,7 +27,7 @@ export type IOrderList = {
 const userSchema = new Schema({
   email: { type:  String, required: true},
   password: { type: String, required: true},
-  profileName: { type: String, required: true},
+  profileName: { type: String},
   address: { type: [{
     firstName: String,
     lastName: String,
@@ -37,13 +37,13 @@ const userSchema = new Schema({
     district: String,
     province: String,
     code: String,
-  }], required: true},
+  }]},
   role: { type: String, required: true},
   likeProduct: [String],
-  cart: {type :[{
+  cart: { type :[{
     productId : String,
     amount : Number
-  }],  unique: true},
+  }]},
   waitingPayment: [String],
   orderList: [{
     productId: mongoose.Types.ObjectId,
@@ -53,7 +53,7 @@ const userSchema = new Schema({
     transactionIdRef: mongoose.Types.ObjectId
   }],
   hashedCode: String,
-  telNo: { type: String, required: true}
+  telNo: { type: String}
 });
 
 // define type of user
