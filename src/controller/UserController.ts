@@ -7,6 +7,7 @@ import { EMAIL_APP_PASSWORD, EMAIL_USERNAME } from "../utils/loadEnvirontment";
 import { ConfirmPasswordService } from "../service/ConfirmPassword";
 import { UpdateAddressService } from "../service/UpdateAddressService";
 import { GetInfoService } from "../service/GetInfoService"; 
+import { OrderListService } from "../service/OrderListService";
 
 function initNodeMailer(req: Request, res: Response, next: NextFunction) {
   if(!NodeMailer.transporter) {
@@ -77,6 +78,13 @@ class UserController {
   postDeleteAddress(req: Request, res: Response): Promise<Response> | Response {
     const deleteAddress = new UpdateAddressService();
     return deleteAddress.deleteAddress(req, res);
+  }
+
+  @post('/order_list')
+  @bodyValidator('email')
+  getOrderList(req: Request, res: Response): Promise<Response> {
+    const orderListService = new OrderListService();
+    return orderListService.getOrderListOfUser(req.body.email, res);
   }
 
   

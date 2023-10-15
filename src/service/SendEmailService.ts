@@ -8,7 +8,7 @@ import { EMAIL_USERNAME, SERVER_PORT } from "../utils/loadEnvirontment";
 import Mailgen, { Content } from "mailgen";
 import { NodeMailer } from "../utils/NodeMailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
-
+import bcrypt from "bcrypt";
 
 interface allowedUserChangePassword {
   password: string;
@@ -20,7 +20,7 @@ export class SendEmailService {
   sendConfirmPassword(req: Request, res: Response): Promise<Response> | Response{
 
     const email: string = req.body.email;
-    const updateObj: allowedUserChangePassword = JSON.parse(req.body.updateObj);
+    const updateObj: allowedUserChangePassword = req.body.updateObj;
 
     if(!this.validate(updateObj)) {
       return res.send(`Properties invalid. props cannot edit`);
@@ -48,13 +48,16 @@ export class SendEmailService {
     // not found user in database
     if(!doc) {
       dtoResp.setMessage('Not found user in database!.');
-      return res.status(422).json( dtoResp );
+      return res.status(200).json( dtoResp );
     }
 
+    const comparePassword: boolean = await bcrypt.compare(updateObj.password, doc.password);
+
+
     // password input not matched database password  
-    if(updateObj.password !== doc.password) {
+    if(!comparePassword) {
       dtoResp.setMessage('Password Not Matched!.');
-      return res.status(422).json( dtoResp );
+      return res.status(200).json( dtoResp );
     }
 
 
@@ -91,7 +94,7 @@ export class SendEmailService {
       });
 
       dtoResp.setStatus(HandlerStatus.Success);
-      dtoResp.setMessage('Email Sent!.');
+      dtoResp.setMessage('Email sent!. Please confirm your new password in email.');
       return res.status(200).json({ ...dtoResp, info: info.messageId})
       
     } catch (error) {

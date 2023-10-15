@@ -274,7 +274,7 @@ export class ProductService {
 
         if(productList.length === 0) {
             dtoResp.setMessage(`you don't have product in store yet!.`);
-            return res.status(422).json( dtoResp );
+            return res.status(200).json( dtoResp );
         }
 
         dtoResp.setStatus(HandlerStatus.Success);

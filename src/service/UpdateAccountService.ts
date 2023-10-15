@@ -37,7 +37,7 @@ export class UpdateAccountService{
 
     if(!doc) {
       dtoResp.setMessage('user not found in the collection');
-      return res.status(422).json( dtoResp );
+      return res.status(200).json( dtoResp );
     }
 
     dtoResp.setStatus(HandlerStatus.Success);

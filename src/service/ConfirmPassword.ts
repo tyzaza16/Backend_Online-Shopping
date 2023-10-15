@@ -4,6 +4,7 @@ import { DtoResp } from "../common/model/DataObjResp";
 import { Application, FrontEnd, HandlerStatus, MAIL_TIMEOUT } from "../Constant";
 import { DateResultsObj, DateUtil } from "../utils/DateUtil";
 import { User, UserModel } from "../db/model/userModel";
+import bcrypt from 'bcrypt';
 
 type QueryParams = string | string[] | QueryString.ParsedQs | QueryString.ParsedQs[];
 
@@ -49,12 +50,13 @@ export class ConfirmPasswordService{
         return res.redirect('/404');
       }
 
+    const hashedNewPassword: string = await bcrypt.hash(newPassword.toString(), 10);
 
     // time pass less than 3 minutes
     // 1. save new password to database by search hashedcode
     let doc: User | null = await UserModel.findOneAndUpdate(
       { hashedCode },
-      { password: newPassword, hashedCode: null }, 
+      { password: hashedNewPassword, hashedCode: null }, 
       { new: true }
     );
     

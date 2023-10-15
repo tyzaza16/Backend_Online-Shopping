@@ -9,7 +9,7 @@ export class UpdateAddressService{
   addAddress(req: Request, res: Response): Promise<Response> | Response {
     
     const email: string = req.body.email;
-    const updateObj: IAddress = JSON.parse(req.body.updateObj);
+    const updateObj: IAddress = req.body.updateObj;
 
     if(!this.validateAllProps(updateObj)){
       return res.send(`Properties invalid. props cannot edit`);
@@ -21,7 +21,7 @@ export class UpdateAddressService{
 
   updateAddress(req: Request, res: Response): Promise<Response> | Response {
   
-    const updateObj: IAddress = JSON.parse(req.body.updateObj);
+    const updateObj: IAddress = req.body.updateObj;
 
 
     if(!this.validateSomeProps(updateObj)){
@@ -59,7 +59,7 @@ export class UpdateAddressService{
     } catch (error) {
       dtoResp.setStatus(HandlerStatus.Failed);
       dtoResp.setMessage('Error Cannot save address.');
-      return res.status(422).json({ ...dtoResp, error });
+      return res.status(200).json({ ...dtoResp, error });
     }
 
   }
@@ -114,7 +114,7 @@ export class UpdateAddressService{
     } catch (error) {
       dtoResp.setStatus(HandlerStatus.Failed);
       dtoResp.setMessage('Error! can not delete address');
-      return res.status(422).json({ ...dtoResp, error });
+      return res.status(200).json({ ...dtoResp, error });
     }
   }
 

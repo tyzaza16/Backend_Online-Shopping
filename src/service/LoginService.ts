@@ -2,6 +2,7 @@ import { ApplicationRole, HandlerStatus } from './../Constant';
 import { Response, Request } from "express";
 import { User, UserModel } from "../db/model/userModel";
 import { DtoResp } from "../common/model/DataObjResp";
+import bcrypt from 'bcrypt';
 
 export class LoginService{ 
   
@@ -26,8 +27,10 @@ export class LoginService{
       return res.status(200).json( dtoResp );
     }
 
+    const comparePassword: boolean = await bcrypt.compare(password, user.password);
+
     // 2. check password is match
-    if(password !== user.password) { 
+    if(!comparePassword) { 
       dtoResp.setMessage('password not match');
       return res.status(200).json( dtoResp );
     }
