@@ -8,11 +8,21 @@ import { HydratedDocument } from "mongoose";
 export class CartService{
     static async addCart(req : Request, res : Response): Promise<Response> {
         const dtoResp = new DtoResp();
+        const checkDuplicate : User | null  = await UserModel.findOne(
+            { email : req.body.email, "cart.productId" : req.body.productId },
+        );
+
+        if(checkDuplicate){
+            dtoResp.setStatus(HandlerStatus.Failed)
+            dtoResp.setMessage("This product has been exist in cart")
+            return res.status(200).json(dtoResp);
+        }
         const user : HydratedDocument<User> | null  = await UserModel.findOneAndUpdate(
             { email : req.body.email },
-            { $push : { cart : { productId : req.body.productId, amount : req.body.amount }}},
-            { new : true }
+            { $push : { cart : { productId : req.body.productId, amount : 1 }}},
+            { new : true, upsert : true }
         );
+
         if(!user){
             dtoResp.setStatus(HandlerStatus.Failed)
             dtoResp.setMessage("Email doesn't exist in system")
@@ -77,7 +87,12 @@ export class CartService{
             const i = user?.cart.findIndex((obj)=>{
                 return product.productId == obj.productId
             })
-            return {...product.toObject(), amount : user?.cart[i].amount}
+
+            const islikeProduct = user?.likeProduct.find((likeProduct_id)=>{
+                return likeProduct_id === product.productId;
+            })
+            console.log(islikeProduct);
+            return {...product.toObject(), amount : user?.cart[i].amount, islike : islikeProduct ? true : false}
         })
 
         dtoResp.setStatus(HandlerStatus.Success);

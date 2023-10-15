@@ -283,7 +283,7 @@ export class ProductService {
     }
 
     static async getBestSeller(
-        res: Response
+        req :Request, res: Response
     ): Promise<Response> {
 
         const dtoResp: DtoResp = new DtoResp();
@@ -345,8 +345,21 @@ export class ProductService {
             return res.status(200).json({ ...dtoResp, bestSellerProduct});
         }
 
-        // let bestSellerList: BestSellerProduct[] = []
+        if(req.body.email){ // There is user login
+            const user : User | null  = await UserModel.findOne({ email : req.body.email});
+            const LikeandBestSellerProduct = bestSellerProduct.map((product)=>{
+                const islikeProduct = user?.likeProduct.find((likeProduct_id)=>{
+                    return likeProduct_id === product.productDetail.productId;
+                })
+                return {...product, islike : islikeProduct ? true : false}
+            })
+            
+            dtoResp.setStatus(HandlerStatus.Success);
+            dtoResp.setMessage('Successfully get data!.');
+            return res.status(200).json({ ...dtoResp, bestSellerProduct : LikeandBestSellerProduct });
+        }
 
+        // let bestSellerList: BestSellerProduct[] = []
         // for(let bestSeller of bestSellerProduct) {
 
         //     if(bestSeller.productDetail.productImage) {
@@ -365,7 +378,7 @@ export class ProductService {
 
     }
 
-    static async suggestProduct(res: Response): Promise<Response> {
+    static async suggestProduct(req :Request, res: Response): Promise<Response> {
 
         const dtoResp: DtoResp = new DtoResp();
         dtoResp.setStatus(HandlerStatus.Failed);
@@ -391,12 +404,26 @@ export class ProductService {
             return res.status(200).json({ ...dtoResp, randomProduct });
         }
 
+        if(req.body.email){ // There is user login
+            const user : User | null  = await UserModel.findOne({ email : req.body.email});
+            const LikeandRandomProduct = randomProduct.map((product)=>{
+                const islikeProduct = user?.likeProduct.find((likeProduct_id)=>{
+                    return likeProduct_id === product.productId;
+                })
+                return {...product, islike : islikeProduct ? true : false}
+            })
+            dtoResp.setStatus(HandlerStatus.Success);
+            dtoResp.setMessage('Successfully get data!.');
+            console.log(LikeandRandomProduct);
+            return res.status(200).json({ ...dtoResp, randomProduct : LikeandRandomProduct });
+        }
+
         dtoResp.setStatus(HandlerStatus.Success);
         dtoResp.setMessage('Successfully get data!.');
         return res.status(200).json({ ...dtoResp, randomProduct });
     }
 
-    static async getNewestProduct(res: Response): Promise<Response> {
+    static async getNewestProduct(req :Request, res: Response): Promise<Response> {
         const dtoResp: DtoResp = new DtoResp();
         dtoResp.setStatus(HandlerStatus.Success);
         dtoResp.setMessage('Successfully find newest product!.');
@@ -404,8 +431,23 @@ export class ProductService {
         const newestProduct: Product[] = await ProductModel.find({}, {productImage: 0})
         .sort({
             timestamp: -1
-        }).limit(10);
+        }).limit(10).lean();
 
+        if(req.body.email){ // There is user login
+            const user : User | null  = await UserModel.findOne({ email : req.body.email});
+            const LikeandBestSellerProduct = newestProduct.map((product)=>{
+                const islikeProduct = user?.likeProduct.find((likeProduct_id)=>{
+                    return likeProduct_id === product.productId;
+                })
+                console.log({...product});
+                return {...product, islike : islikeProduct ? true : false}
+            })
+            dtoResp.setStatus(HandlerStatus.Success);
+            dtoResp.setMessage('Successfully get data!.');
+            return res.status(200).json({ ...dtoResp, newestProduct : LikeandBestSellerProduct });
+        }
+        dtoResp.setStatus(HandlerStatus.Success);
+        dtoResp.setMessage('Successfully get data!.');
         return res.status(200).json({...dtoResp, newestProduct});
     } 
 

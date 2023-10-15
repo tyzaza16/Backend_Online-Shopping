@@ -24,19 +24,19 @@ class ProductController{
         ProductService.searchProduct(req, res);
     }
 
-    @get('/suggest_product')
+    @post('/suggest_product')
     suggestProduct(req: Request, res: Response) {
-        return ProductService.suggestProduct(res);
+        return ProductService.suggestProduct(req, res);
     }
 
-    @get('/best_selling')
+    @post('/best_selling')
     bestSellingProduct(req: Request, res: Response) {
-        return ProductService.getBestSeller(res);
+        return ProductService.getBestSeller(req, res);
     }
 
-    @get('/newest')
+    @post('/newest')
     newestProduct(req: Request, res: Response) {
-        return ProductService.getNewestProduct(res);
+        return ProductService.getNewestProduct(req, res);
     }
     
 }
