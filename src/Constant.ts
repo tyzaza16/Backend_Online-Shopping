@@ -24,7 +24,8 @@ export enum Application {
 
 export enum FrontEnd {
   Port = 3000,
-  AccountPage = '/Account'
+  AccountPage = '/Account',
+  IndexPage = '/'
 }
 
 export enum TransportStatus {

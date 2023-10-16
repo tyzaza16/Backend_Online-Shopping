@@ -67,6 +67,6 @@ export class ConfirmPasswordService{
     // 3. redirect to account pages
     // dtoResp.setStatus(HandlerStatus.Success);
     // dtoResp.setMessage('Successfuly Changed Password');
-    return res.redirect(`${Application.Host}:${FrontEnd.Port}${FrontEnd.AccountPage}`);
+    return res.redirect(`${Application.Host}:${FrontEnd.Port}${FrontEnd.IndexPage}`);
   }
 }
