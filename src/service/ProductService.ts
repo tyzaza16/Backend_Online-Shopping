@@ -282,6 +282,30 @@ export class ProductService {
         return res.status(200).json({ ...dtoResp, productList });
     }
 
+    async getProductManagement( merchantEmail: string, res: Response ): Promise<Response>{
+
+        const dtoResp: DtoResp = new DtoResp();
+        dtoResp.setStatus(HandlerStatus.Failed);
+
+        // if(use find it will return [] when not found document matched)
+        // if(use findOne it will return null when not found document matched)
+        let productList: Product[] | [] = await ProductModel.find
+        (
+            { merchantEmail, delFlag: false },
+            { productImage: 0}
+        ).lean(); 
+        
+
+        if(productList.length === 0) {
+            dtoResp.setMessage(`you don't have product in store yet!.`);
+            return res.status(200).json( dtoResp );
+        }
+
+        dtoResp.setStatus(HandlerStatus.Success);
+        dtoResp.setMessage(`Successfully get warehouse history`);
+        return res.status(200).json({ ...dtoResp, productList });
+    }
+
     static async getBestSeller(
         req :Request, res: Response
     ): Promise<Response> {
@@ -449,7 +473,27 @@ export class ProductService {
         dtoResp.setStatus(HandlerStatus.Success);
         dtoResp.setMessage('Successfully get data!.');
         return res.status(200).json({...dtoResp, newestProduct});
-    } 
+    }
+
+    async deleteProduct(id: string, res: Response): Promise<Response> {
+        const dtoResp: DtoResp = new DtoResp();
+        dtoResp.setStatus(HandlerStatus.Failed);
+        dtoResp.setMessage('Product not found !.');
+
+        const delProduct: User | null = await ProductModel.findByIdAndUpdate(
+            id,
+            { delFlag: true},
+            { new: true }
+        );
+        
+        if(!delProduct) {
+            return res.status(200).json( dtoResp );
+        }
+
+        dtoResp.setStatus(HandlerStatus.Success);
+        dtoResp.setMessage('Delete product success!.');
+        return res.status(200).json(dtoResp);
+    }
 
 
     private validateAllPropsInProductArray(productList: Product[]): boolean {

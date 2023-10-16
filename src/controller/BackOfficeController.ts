@@ -31,6 +31,13 @@ class BackOfficeController {
     return productService.getWareHouseHistory(req.body.email, res);
   }
 
+  @post('/manage_product')
+  @bodyValidator('email')
+  postManageProduct(req: Request, res: Response): Promise<Response> {
+    const productService: ProductService = new ProductService();
+    return productService.getProductManagement(req.body.email, res);
+  }
+
   @post('/get_merchant_orders')
   @bodyValidator('merchantEmail')
   postGetMerchantOrders(req: Request, res: Response): Promise<Response>{
@@ -43,6 +50,13 @@ class BackOfficeController {
   postUpdateOrderStatus(req: Request, res: Response): Promise<Response> {
     const merchantService: MerchantService = new MerchantService();
     return merchantService.updateStatusOfPackedOrder(req.body.orderIdList, res);
+  }
+
+  @post('/del_password')
+  @bodyValidator('productId')
+  postDeleteProduct(req: Request, res: Response): Promise<Response> {
+    const productService: ProductService = new ProductService();
+    return productService.deleteProduct(req.body.productId,res);
   }
 
 }

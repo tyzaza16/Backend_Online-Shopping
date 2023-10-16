@@ -29,6 +29,7 @@ interface IProduct{
     brandName: string;
     netCost: number; 
     timestamp: Date;
+    delFlag: boolean
 }
 
 // 2. Create a Schema corresponding to the document interface.
@@ -56,7 +57,8 @@ const productSchema = new Schema<IProduct>({
     merchantEmail: {type: String, required: true},
     brandName: String,
     netCost: {type: Number, required : true},
-    timestamp: {type: Date, required: true}
+    timestamp: {type: Date, required: true},
+    delFlag: {type: Boolean, default: false}
 });
 
 // 3. Create a Model.

@@ -1,6 +1,7 @@
-import { NextFunction, Request, Response } from "express";
-import { get, controller, post, bodyValidator} from './decorators';
+import { Request, Response } from "express";
+import { controller, post} from './decorators';
 import {RegisterService} from "../service/RegisterService"
+
 
 @controller('/register')
 class RegisterController {
@@ -9,8 +10,4 @@ class RegisterController {
         RegisterService.registerGeneral(req, res);
     }
 
-    @post('/google')
-    get(req: Request, res: Response){
-        res.send('Welcome to API Home...');
-    }
 }

@@ -22,8 +22,18 @@ export enum Application {
   Name = 'CAT HOUSE'
 }
 
+export enum Server {
+  Host = 'http://localhost',
+  Name = 'CAT HOUSE SERVER'
+}
+
 export enum FrontEnd {
   Port = 3000,
+  AccountPage = '/Account'
+}
+
+export enum BackEnd {
+  Port = 4000,
   AccountPage = '/Account'
 }
 

@@ -26,17 +26,27 @@ if(!process.env.EMAIL_APP_PASSWORD) {
   throw new Error('EMAIL_APP_PASSWORD is not exist in env file');
 }
 
+if(!process.env.GOOGLE_CLIENT_ID) {
+  throw new Error('GOOGLE_CLIENT_ID is not exist in env file');
+}
+
+if(!process.env.GOOGLE_CLIENT_SECRET) {
+  throw new Error('GOOGLE_CLIENT_SECRET is not exist in env file');
+}
 
 
 const DB_URI: string = process.env.DB_URI;
 const SERVER_PORT: string = process.env.SERVER_PORT;
 const EMAIL_USERNAME: string = process.env.EMAIL_USERNAME;
 const EMAIL_APP_PASSWORD: string = process.env.EMAIL_APP_PASSWORD;
-
+const GOOGLE_CLIENT_ID: string = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_SECRET: string = process.env.GOOGLE_CLIENT_SECRET;
 
 export { 
   DB_URI,
   SERVER_PORT,
   EMAIL_USERNAME,
-  EMAIL_APP_PASSWORD
+  EMAIL_APP_PASSWORD,
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET
 };
