@@ -107,7 +107,7 @@ export class ProductService {
     static async searchProduct(req : Request, res: Response){
         const dtoResp = new DtoResp;
         const productFinded : HydratedDocument<Product>[] | null = await ProductModel.find(
-            {productName : {$regex : req.body.productName , $options : 'i'}},
+            {productName : {$regex : req.body.productName , $options : 'i'}, delFlag: false},
             {new : true}
         )
         console.log(productFinded);
@@ -221,7 +221,8 @@ export class ProductService {
             
                 const findProduct: HydratedDocument<Product> | null = await ProductModel.findOne({ 
                     merchantEmail: email, 
-                    productName: product.productName 
+                    productName: product.productName,
+                    delFlag: false
                 });
         
                 // if not have product : add new product
@@ -245,7 +246,7 @@ export class ProductService {
                  
             }
 
-            const currentProductList: Product[] | null = await ProductModel.find({ merchantEmail: email }, {productImage: 0});
+            const currentProductList: Product[] | null = await ProductModel.find({ merchantEmail: email, delFlag: false }, {productImage: 0});
             
             dtoResp.setStatus(HandlerStatus.Success);
             dtoResp.setMessage('Update stock successfully!.');
@@ -354,6 +355,11 @@ export class ProductService {
                 }
             },
             {
+                $match: {
+                    "productDetail.delFlag": false
+                }
+            },
+            {
                 $sort: {
                     soldQuantity: -1
                 }
@@ -419,6 +425,16 @@ export class ProductService {
                 }
             },
             {
+                $match: {
+                    delFlag: false
+                }
+            },
+            {
+                $unset: [
+                    "productImage"
+                ]
+            },
+            {
                 $sample: { size: 10}
             }
         ]);
@@ -452,7 +468,7 @@ export class ProductService {
         dtoResp.setStatus(HandlerStatus.Success);
         dtoResp.setMessage('Successfully find newest product!.');
 
-        const newestProduct: Product[] = await ProductModel.find({}, {productImage: 0})
+        const newestProduct: Product[] = await ProductModel.find({ delFlag: false}, {productImage: 0})
         .sort({
             timestamp: -1
         }).limit(10).lean();
